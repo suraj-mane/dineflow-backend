@@ -3,6 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import { errorHandler } from "./middleware/error.middleware";
 import { generalLimiter } from "./middleware/rateLimit.middleware";
+import authRoutes from "./modules/auth/auth.routes";
 import { db } from "./config/database";
 import redis from "./config/redis";
 
@@ -35,8 +36,8 @@ app.get("/health", async (_req, res) => {
     });
 });
 
-// ── Routes — added Day 3 onwards ─────────────────────────────────────────────
-// app.use("/api/auth", authRoutes);
+// ── Routes ───────────────────────────────────────────────────────────────────
+app.use("/api/auth", authRoutes);
 
 // ── Error handler — MUST be last ─────────────────────────────────────────────
 app.use(errorHandler);
