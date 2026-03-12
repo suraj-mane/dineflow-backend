@@ -4,6 +4,7 @@ import helmet from "helmet";
 import { errorHandler } from "./middleware/error.middleware";
 import { generalLimiter } from "./middleware/rateLimit.middleware";
 import authRoutes from "./modules/auth/auth.routes";
+import restaurantRoutes from "./modules/restaurant/restaurant.routes";
 import { db } from "./config/database";
 import redis from "./config/redis";
 
@@ -38,6 +39,7 @@ app.get("/health", async (_req, res) => {
 
 // ── Routes ───────────────────────────────────────────────────────────────────
 app.use("/api/auth", authRoutes);
+app.use("/api/restaurants", restaurantRoutes);
 
 // ── Error handler — MUST be last ─────────────────────────────────────────────
 app.use(errorHandler);
