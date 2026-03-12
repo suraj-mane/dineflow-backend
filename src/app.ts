@@ -5,6 +5,8 @@ import { errorHandler } from "./middleware/error.middleware";
 import { generalLimiter } from "./middleware/rateLimit.middleware";
 import authRoutes from "./modules/auth/auth.routes";
 import restaurantRoutes from "./modules/restaurant/restaurant.routes";
+import categoryRoutes from "./modules/category/category.routes";
+import menuItemRoutes from "./modules/menu-item/menuItem.routes";
 import { db } from "./config/database";
 import redis from "./config/redis";
 
@@ -40,6 +42,8 @@ app.get("/health", async (_req, res) => {
 // ── Routes ───────────────────────────────────────────────────────────────────
 app.use("/api/auth", authRoutes);
 app.use("/api/restaurants", restaurantRoutes);
+app.use("/api", categoryRoutes);
+app.use("/api", menuItemRoutes);
 
 // ── Error handler — MUST be last ─────────────────────────────────────────────
 app.use(errorHandler);
