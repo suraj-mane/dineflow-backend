@@ -12,6 +12,7 @@ import redis from "./config/redis";
 import { authenticate } from "./middleware/auth.middleware";
 import { getRestaurantOrdersController } from "./modules/order/order.controller";
 import orderRoutes from "./modules/order/order.routes";
+import { setupSwagger } from "./config/swagger";
 
 const app = express();
 
@@ -41,6 +42,9 @@ app.get("/health", async (_req, res) => {
         timestamp: new Date().toISOString(),
     });
 });
+
+// ── Swagger Docs ──────────────────────────────────────────────────────────────
+setupSwagger(app);
 
 // ── Routes ───────────────────────────────────────────────────────────────────
 app.use("/api/auth", authRoutes);

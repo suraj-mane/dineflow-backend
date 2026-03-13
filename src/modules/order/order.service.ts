@@ -1,6 +1,6 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { db } from "../../config/database";
-import { getIO } from "../../config/socket";
+import { emitToCustomer, emitToRestaurant } from "../../config/socket";
 import { orderQueue } from "../../jobs/orderQueue";
 import { CreateOrderInput, UpdateOrderStatusInput } from "./order.types";
 
@@ -113,16 +113,11 @@ export const createOrder = async (
         );
 
         // 7. Emit real-time event to restaurant
-        try {
-            const io = getIO();
-            io.to(`restaurant_${restaurant_id}`).emit("new-order", {
-                orderId,
-                total,
-                itemCount: items.length,
-            });
-        } catch {
-            // Socket not critical — order still created
-        }
+        emitToRestaurant(restaurant_id, "new-order", {
+            orderId,
+            total,
+            itemCount: items.length,
+        });
 
         return { order_id: orderId, total, status: "pending" };
 
@@ -336,16 +331,17 @@ export const updateOrderStatus = async (
         }
     }
 
-    // Emit real-time status update
-    try {
-        const io = getIO();
-        io.to(`restaurant_${order.restaurant_id}`).emit("order-status-updated", {
-            orderId,
-            status: data.status,
-        });
-    } catch {
-        // Not critical
-    }
+    // Emit to restaurant room
+    emitToRestaurant(order.restaurant_id, "order-status-updated", {
+        orderId,
+        status: data.status,
+    });
+
+    // Also emit to customer room
+    emitToCustomer(order.customer_id, "your-order-updated", {
+        orderId,
+        status: data.status,
+    });
 
     return { order_id: orderId, status: data.status };
 };
