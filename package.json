@@ -1,7 +1,7 @@
 {
   "name": "dineflow-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/server.js",
   "directories": {
     "test": "tests"
   },
@@ -16,6 +16,12 @@
     "test": "jest --runInBand",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
+  },
+  "ts-node": {
+    "esm": false,
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
   },
   "keywords": [],
   "author": "",

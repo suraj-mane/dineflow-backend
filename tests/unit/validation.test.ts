@@ -2,6 +2,7 @@ import { registerSchema, loginSchema } from "../../src/modules/auth/auth.validat
 import { createRestaurantSchema } from "../../src/modules/restaurant/restaurant.validation";
 import { createCategorySchema } from "../../src/modules/category/category.validation";
 import { createMenuItemSchema } from "../../src/modules/menu-item/menuItem.validation";
+import { createOrderSchema, updateOrderStatusSchema } from "../../src/modules/order/order.validation";
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 describe("registerSchema", () => {
@@ -145,6 +146,63 @@ describe("createMenuItemSchema", () => {
 
     it("accepts is_available boolean", () => {
         expect(createMenuItemSchema.safeParse({ ...valid, is_available: false }).success).toBe(true);
+    });
+
+});
+
+describe("createOrderSchema", () => {
+
+    const valid = {
+        restaurant_id: 1,
+        items: [{ menu_item_id: 1, quantity: 2 }],
+    };
+
+    it("accepts valid order", () => {
+        expect(createOrderSchema.safeParse(valid).success).toBe(true);
+    });
+
+    it("rejects empty items array", () => {
+        expect(createOrderSchema.safeParse({ ...valid, items: [] }).success).toBe(false);
+    });
+
+    it("rejects zero quantity", () => {
+        expect(createOrderSchema.safeParse({
+            ...valid,
+            items: [{ menu_item_id: 1, quantity: 0 }],
+        }).success).toBe(false);
+    });
+
+    it("rejects negative restaurant_id", () => {
+        expect(createOrderSchema.safeParse({ ...valid, restaurant_id: -1 }).success).toBe(false);
+    });
+
+    it("accepts multiple items", () => {
+        expect(createOrderSchema.safeParse({
+            ...valid,
+            items: [
+                { menu_item_id: 1, quantity: 2 },
+                { menu_item_id: 2, quantity: 1 },
+            ],
+        }).success).toBe(true);
+    });
+
+});
+
+describe("updateOrderStatusSchema", () => {
+
+    it("accepts all valid statuses", () => {
+        const statuses = ["confirmed", "preparing", "ready", "completed", "cancelled"];
+        statuses.forEach(status => {
+            expect(updateOrderStatusSchema.safeParse({ status }).success).toBe(true);
+        });
+    });
+
+    it("rejects invalid status", () => {
+        expect(updateOrderStatusSchema.safeParse({ status: "pending" }).success).toBe(false);
+    });
+
+    it("rejects missing status", () => {
+        expect(updateOrderStatusSchema.safeParse({}).success).toBe(false);
     });
 
 });

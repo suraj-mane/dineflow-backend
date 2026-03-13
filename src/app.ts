@@ -9,6 +9,9 @@ import categoryRoutes from "./modules/category/category.routes";
 import menuItemRoutes from "./modules/menu-item/menuItem.routes";
 import { db } from "./config/database";
 import redis from "./config/redis";
+import { authenticate } from "./middleware/auth.middleware";
+import { getRestaurantOrdersController } from "./modules/order/order.controller";
+import orderRoutes from "./modules/order/order.routes";
 
 const app = express();
 
@@ -44,6 +47,13 @@ app.use("/api/auth", authRoutes);
 app.use("/api/restaurants", restaurantRoutes);
 app.use("/api", categoryRoutes);
 app.use("/api", menuItemRoutes);
+app.use("/api/orders", orderRoutes);
+
+// Restaurant-scoped order listing
+app.use("/api/restaurants/:restaurantId/orders", authenticate, (req,_res, next) => {
+    (req as any).restaurantIdParam = req.params.restaurantId;
+    next();
+}, getRestaurantOrdersController);
 
 // ── Error handler — MUST be last ─────────────────────────────────────────────
 app.use(errorHandler);
