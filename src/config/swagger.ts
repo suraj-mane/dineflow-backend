@@ -1,16 +1,21 @@
-import swaggerJsdoc  from "swagger-jsdoc";
-import swaggerUi     from "swagger-ui-express";
-import { Express }   from "express";
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
+import { Express } from "express";
+
+const isProduction = __dirname.includes("dist");
+const routesGlob = isProduction
+  ? "./dist/modules/**/*.routes.js"
+  : "./src/modules/**/*.routes.ts";
 
 const options: swaggerJsdoc.Options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title:       "DineFlow API",
-      version:     "2.0.0",
+      title: "DineFlow API",
+      version: "2.0.0",
       description: "Restaurant Management System REST API",
       contact: {
-        name:  "Suraj Mane",
+        name: "Suraj Mane",
         email: "suraj@dineflow.com",
       },
     },
@@ -20,8 +25,8 @@ const options: swaggerJsdoc.Options = {
     components: {
       securitySchemes: {
         bearerAuth: {
-          type:         "http",
-          scheme:       "bearer",
+          type: "http",
+          scheme: "bearer",
           bearerFormat: "JWT",
         },
       },
@@ -32,17 +37,17 @@ const options: swaggerJsdoc.Options = {
           required: ["firstName", "lastName", "email", "password", "role"],
           properties: {
             firstName: { type: "string", example: "Suraj" },
-            lastName:  { type: "string", example: "Mane" },
-            email:     { type: "string", example: "suraj@test.com" },
-            password:  { type: "string", example: "secret123" },
-            role:      { type: "string", enum: ["admin","owner","kitchen","cashier","customer"] },
+            lastName: { type: "string", example: "Mane" },
+            email: { type: "string", example: "suraj@test.com" },
+            password: { type: "string", example: "secret123" },
+            role: { type: "string", enum: ["admin", "owner", "kitchen", "cashier", "customer"] },
           },
         },
         LoginInput: {
           type: "object",
           required: ["email", "password"],
           properties: {
-            email:    { type: "string", example: "suraj@test.com" },
+            email: { type: "string", example: "suraj@test.com" },
             password: { type: "string", example: "secret123" },
           },
         },
@@ -51,11 +56,11 @@ const options: swaggerJsdoc.Options = {
           type: "object",
           required: ["name"],
           properties: {
-            name:           { type: "string", example: "Spice Garden" },
-            descriptions:   { type: "string" },
-            phone:          { type: "string", example: "9876543210" },
-            city:           { type: "string", example: "Nagpur" },
-            state:          { type: "string", example: "Maharashtra" },
+            name: { type: "string", example: "Spice Garden" },
+            descriptions: { type: "string" },
+            phone: { type: "string", example: "9876543210" },
+            city: { type: "string", example: "Nagpur" },
+            state: { type: "string", example: "Maharashtra" },
             tax_percentage: { type: "number", example: 5 },
           },
         },
@@ -64,10 +69,10 @@ const options: swaggerJsdoc.Options = {
           type: "object",
           required: ["name", "price"],
           properties: {
-            name:         { type: "string",  example: "Paneer Tikka" },
-            description:  { type: "string" },
-            price:        { type: "number",  example: 280 },
-            image_url:    { type: "string" },
+            name: { type: "string", example: "Paneer Tikka" },
+            description: { type: "string" },
+            price: { type: "number", example: 280 },
+            image_url: { type: "string" },
             is_available: { type: "boolean", example: true },
           },
         },
@@ -78,12 +83,12 @@ const options: swaggerJsdoc.Options = {
           properties: {
             restaurant_id: { type: "integer", example: 1 },
             items: {
-              type:  "array",
+              type: "array",
               items: {
                 type: "object",
                 properties: {
                   menu_item_id: { type: "integer", example: 1 },
-                  quantity:     { type: "integer", example: 2 },
+                  quantity: { type: "integer", example: 2 },
                 },
               },
             },
@@ -95,7 +100,7 @@ const options: swaggerJsdoc.Options = {
           properties: {
             success: { type: "boolean", example: true },
             message: { type: "string" },
-            data:    { type: "object" },
+            data: { type: "object" },
           },
         },
         ErrorResponse: {
@@ -117,7 +122,7 @@ const options: swaggerJsdoc.Options = {
                 pagination: {
                   type: "object",
                   properties: {
-                    page:  { type: "integer" },
+                    page: { type: "integer" },
                     limit: { type: "integer" },
                     total: { type: "integer" },
                     pages: { type: "integer" },
@@ -131,7 +136,7 @@ const options: swaggerJsdoc.Options = {
     },
     security: [{ bearerAuth: [] }],
   },
-  apis: ["./src/modules/**/*.routes.ts"],
+  apis: [routesGlob],
 };
 
 export const swaggerSpec = swaggerJsdoc(options);

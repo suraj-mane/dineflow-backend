@@ -13,6 +13,7 @@ import { authenticate } from "./middleware/auth.middleware";
 import { getRestaurantOrdersController } from "./modules/order/order.controller";
 import orderRoutes from "./modules/order/order.routes";
 import { setupSwagger } from "./config/swagger";
+import uploadRoutes from "./modules/upload/upload.routes";
 
 const app = express();
 
@@ -52,6 +53,7 @@ app.use("/api/restaurants", restaurantRoutes);
 app.use("/api", categoryRoutes);
 app.use("/api", menuItemRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/upload", uploadRoutes);
 
 // Restaurant-scoped order listing
 app.use("/api/restaurants/:restaurantId/orders", authenticate, (req,_res, next) => {
