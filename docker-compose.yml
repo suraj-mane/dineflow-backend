@@ -14,7 +14,25 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    env_file: .env
+    environment:
+      PORT: ${PORT}
+      NODE_ENV: ${NODE_ENV}
+      CORS_ORIGIN: ${CORS_ORIGIN}
+      DB_HOST: "mysql"
+      DB_PORT: "3306"
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      REDIS_HOST: "redis"
+      REDIS_PORT: "6379"
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID}
+      RAZORPAY_KEY_SECRET: ${RAZORPAY_KEY_SECRET}
+      RAZORPAY_WEBHOOK_SECRET: ${RAZORPAY_WEBHOOK_SECRET}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
     restart: unless-stopped
     volumes:
       - ./logs:/app/logs
@@ -30,7 +48,16 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    env_file: .env
+    environment:
+      DB_HOST: "mysql"
+      DB_PORT: "3306"
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      REDIS_HOST: "redis"
+      REDIS_PORT: "6379"
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
     restart: unless-stopped
     volumes:
       - ./logs:/app/logs
@@ -49,7 +76,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -64,7 +91,7 @@ services:
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s
       timeout: 5s
       retries: 5

@@ -3,9 +3,6 @@ import swaggerUi from "swagger-ui-express";
 import { Express } from "express";
 
 const isProduction = __dirname.includes("dist");
-const routesGlob = isProduction
-  ? "./dist/modules/**/*.routes.js"
-  : "./src/modules/**/*.routes.ts";
 
 const options: swaggerJsdoc.Options = {
   definition: {
@@ -136,7 +133,25 @@ const options: swaggerJsdoc.Options = {
     },
     security: [{ bearerAuth: [] }],
   },
-  apis: [routesGlob],
+  apis: isProduction
+    ? [
+        "./dist/modules/auth/auth.routes.js",
+        "./dist/modules/restaurant/restaurant.routes.js",
+        "./dist/modules/category/category.routes.js",
+        "./dist/modules/menu-item/menuItem.routes.js",
+        "./dist/modules/order/order.routes.js",
+        "./dist/modules/upload/upload.routes.js",
+        "./dist/modules/payment/payment.routes.js",
+      ]
+    : [
+        "./src/modules/auth/auth.routes.ts",
+        "./src/modules/restaurant/restaurant.routes.ts",
+        "./src/modules/category/category.routes.ts",
+        "./src/modules/menu-item/menuItem.routes.ts",
+        "./src/modules/order/order.routes.ts",
+        "./src/modules/upload/upload.routes.ts",
+        "./src/modules/payment/payment.routes.ts",
+      ],
 };
 
 export const swaggerSpec = swaggerJsdoc(options);
